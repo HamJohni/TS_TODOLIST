@@ -42,7 +42,7 @@ function App() {
     let task3: Array<tasksType> = [
         {
             id: 1,
-            name: "Cheap and Danial",
+            name: "Harry Porter",
             isDone: true
         },
         {
