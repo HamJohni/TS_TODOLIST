@@ -1,49 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {tasksType, TodoList} from "./TodoList";
 
-function App() {
+export type filterTasks = 'all' | 'active' | 'completed'
 
-    let task1: Array<tasksType> = [
-        {
-            id: 1,
-            name: "CSS",
-            isDone: true
-        },
-        {
-            id: 2,
-            name: "HTML",
-            isDone: true
-        },
-        {
-            id: 3,
-            name: "REACT",
-            isDone: true
-        }
-    ]
 
-    let task2: Array<tasksType> = [
-        {
-            id: 1,
-            name: "Go to shop",
-            isDone: true
-        },
-        {
-            id: 2,
-            name: "do housework",
-            isDone: false
-        },
-        {
-            id: 3,
-            name: "Go to gym",
-            isDone: false
-        }
-    ]
+function App () {
 
-    let task3: Array<tasksType> = [
+    const [task,setTask] = useState<Array<tasksType>>([
         {
             id: 1,
             name: "Harry Porter",
-            isDone: true
+            isDone: false
         },
         {
             id: 2,
@@ -53,15 +20,39 @@ function App() {
         {
             id: 3,
             name: "HULK",
-            isDone: true
+            isDone: false
         }
-    ]
+    ])
+
+    const [filter,setFilter] = useState<filterTasks>('all')
+
+    const deleteTask = (id : number) => {
+        let filterTask = task.filter((item) => item.id !== id)
+
+        setTask(filterTask)
+    }
+
+
+    let filterTask = task
+
+    const isTasks = (value: filterTasks) => {
+        setFilter(value)
+    }
+
+    if(filter === 'completed') {
+        filterTask = task.filter((item) => item.isDone === true)
+    }
+    if(filter === 'active') {
+        filterTask = task.filter((item) => item.isDone === false)
+    }
+
 
     return (
         <div style={{display: 'flex',columnGap: "20px"}}>
-          <TodoList task={task1} title="What we need to learn ? "/>
-          <TodoList task={task2} title="What we need to do ?"/>
-          <TodoList task={task3} title="What we need to watch ?"/>
+          <TodoList isTasks={isTasks}
+                    deleteTask={deleteTask}
+                    task={filterTask}
+                    title="What we need to watch ?"/>
         </div>
   );
 }
