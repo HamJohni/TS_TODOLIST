@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {filterTasks} from "./App";
 
 
  export type tasksType = {
-    id: number,
+    id: string,
     name: string,
     isDone: boolean
 }
@@ -11,17 +11,34 @@ import {filterTasks} from "./App";
 export type propsType = {
     title: string,
     task: Array<tasksType>,
-    deleteTask: (id:number) => void,
-    isTasks: (value: filterTasks) => void
+    deleteTask: (id:string) => void,
+    isTasks: (value: filterTasks) => void,
+    addTask: (newTaskTitle: string) => void
 }
 
-
 export const TodoList = (props: propsType) => {
+
+     const [newTaskTitle, setNewTaskTitle] = useState('')
+
     return (
         <div>
             <h3>{props.title}</h3>
             <div>
-                <input type="text"/>
+                <input
+                    value={newTaskTitle}
+                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                    onKeyPress={(e) => {
+                        if(e.charCode === 13) {
+                            props.addTask(newTaskTitle)
+                            setNewTaskTitle('')
+                        }
+                    }}
+
+                    type="text" placeholder='Доабвить задачу'/>
+                <button onClick={() => {
+                    props.addTask(newTaskTitle)
+                    setNewTaskTitle('')
+                }}>+</button>
             </div>
             <ul>
                 {
