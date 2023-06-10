@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import {filterTasks} from "./App";
 
 
@@ -14,7 +14,9 @@ export type propsType = {
     deleteTask: (id:string) => void,
     isTasks: (value: filterTasks) => void,
     addTask: (newTaskTitle: string) => void
+    changeTaskStatus: (taskId: string, isDone: boolean) => void
 }
+
 
 export const TodoList = (props: propsType) => {
 
@@ -42,12 +44,23 @@ export const TodoList = (props: propsType) => {
             </div>
             <ul>
                 {
-                    props.task.map(item => (
-                        <li key={item.id}><input type="checkbox" checked={item.isDone}/>
-                            <span>{item.name}</span>
-                            <button onClick={() => props.deleteTask(item.id)}>Delete</button>
-                        </li>
-                    ))
+                    props.task.map(item => {
+
+                        const onClickRemoveHandler = () => props.deleteTask(item.id)
+                        const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+                            props.changeTaskStatus(item.id, e.currentTarget.checked)
+                        }
+
+                        return (
+                            <li key={item.id}>
+                                <input type="checkbox"
+                                       onChange={onChangeHandler}
+                                       checked={item.isDone}/>
+                                <span>{item.name}</span>
+                                <button onClick={onClickRemoveHandler}>Delete</button>
+                            </li>
+                        )
+                    })
                 }
             </ul>
 
