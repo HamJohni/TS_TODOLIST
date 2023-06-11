@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {tasksType, TodoList} from "./TodoList";
 import {v1} from "uuid";
+import './App.css'
 export type filterTasks = 'all' | 'active' | 'completed'
 
 
@@ -75,6 +76,7 @@ function App () {
                     addTask={addTask}
                     changeTaskStatus={changeStatus}
                     title="What we need to watch ?"
+                    filter={filter}
           />
         </div>
   );

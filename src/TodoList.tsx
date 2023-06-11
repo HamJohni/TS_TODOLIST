@@ -1,5 +1,7 @@
 import React, {ChangeEvent, useState} from 'react';
 import {filterTasks} from "./App";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 
  export type tasksType = {
@@ -15,12 +17,33 @@ export type propsType = {
     isTasks: (value: filterTasks) => void,
     addTask: (newTaskTitle: string) => void
     changeTaskStatus: (taskId: string, isDone: boolean) => void
+    filter: filterTasks
 }
 
 
 export const TodoList = (props: propsType) => {
 
+
      const [newTaskTitle, setNewTaskTitle] = useState('')
+    const [error, setError] = useState('')
+
+    const addTask = () => {
+         if(newTaskTitle.trim() !== '') {
+             props.addTask(newTaskTitle)
+             setNewTaskTitle('')
+             setError('')
+         } else{
+             setError('Title is required')
+         }
+    }
+
+    const inputTitle = (e: any) => {
+        setError('')
+        if(e.charCode === 13) {
+            props.addTask(newTaskTitle)
+            setNewTaskTitle('')
+        }
+    }
 
     return (
         <div>
@@ -29,18 +52,12 @@ export const TodoList = (props: propsType) => {
                 <input
                     value={newTaskTitle}
                     onChange={(e) => setNewTaskTitle(e.target.value)}
-                    onKeyPress={(e) => {
-                        if(e.charCode === 13) {
-                            props.addTask(newTaskTitle)
-                            setNewTaskTitle('')
-                        }
-                    }}
-
-                    type="text" placeholder='Доабвить задачу'/>
-                <button onClick={() => {
-                    props.addTask(newTaskTitle)
-                    setNewTaskTitle('')
-                }}>+</button>
+                    onKeyDown ={inputTitle}
+                    className={error? "error": ''}
+                    placeholder='Добавить задачу'
+                />
+                <button onClick={addTask}>+</button>
+                {error && <div className="error__message">{error}</div>}
             </div>
             <ul>
                 {
@@ -52,7 +69,7 @@ export const TodoList = (props: propsType) => {
                         }
 
                         return (
-                            <li key={item.id}>
+                            <li key={item.id} className={item.isDone ? "is-done" : ''}>
                                 <input type="checkbox"
                                        onChange={onChangeHandler}
                                        checked={item.isDone}/>
@@ -64,9 +81,9 @@ export const TodoList = (props: propsType) => {
                 }
             </ul>
 
-            <button onClick={() => props.isTasks('all')}>All</button>
-            <button onClick={() => props.isTasks('active')}>Active</button>
-            <button onClick={() => props.isTasks('completed')}>Completed</button>
+            <button className={props.filter === 'all' ? "active__filter": ''} onClick={() => props.isTasks('all')}>All</button>
+            <button className={props.filter === 'active' ? "active__filter": ''} onClick={() => props.isTasks('active')}>Active</button>
+            <button className={props.filter === 'completed' ? "active__filter": ''} onClick={() => props.isTasks('completed')}>Completed</button>
         </div>
     );
 };
